@@ -36,7 +36,49 @@
         </form>
       </div>
     </div>
+    <!-- Button trigger modal -->
+    <button
+      type="button"
+      class="btn btn-primary btn-lg"
+      data-toggle="modal"
+      data-target="#myModal"
+    >
+      Launch demo modal
+    </button>
 
+    <!-- Modal -->
+    <div
+      class="modal fade"
+      id="myModal"
+      tabindex="-1"
+      role="dialog"
+      aria-labelledby="myModalLabel"
+    >
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button
+              type="button"
+              class="close"
+              data-dismiss="modal"
+              aria-label="Close"
+            >
+              <span aria-hidden="true">&times;</span>
+            </button>
+            <h4 class="modal-title" id="myModalLabel">温馨提示</h4>
+          </div>
+          <div class="modal-body">
+            ...
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-success" data-dismiss="modal">
+              关闭
+            </button>
+            <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
+          </div>
+        </div>
+      </div>
+    </div>
     <script>
       $(function() {
         $(".login_form").submit(function(e) {
@@ -48,7 +90,17 @@
           const input_pass = $(".input_pass")
             .val()
             .trim();
+
+          // 用户名和密码的非空判断
+          if (input_txt === "" || input_pass === "") {
+            // alert("傻子,用户名或密码为空");
+            $(".modal-body").html("傻子,用户名或密码为空");
+            $("#myModal").modal({ keyboard: true });
+            // 用户名密码有问题就 return 退出，代码无需往后执行
+            return;
+          }
           console.log(input_txt, input_pass);
+
           $.ajax({
             type: "post",
             url: "http://localhost:8080/api/v1/admin/user/login",
@@ -62,12 +114,15 @@
               const msg = response.msg;
               const token = response.token;
               if (code === 200) {
-                alert(msg);
+                // alert(msg);
                 localStorage.setItem("token", token);
                 location.href = "./index.html";
-              } else {
-                alert(msg);
               }
+              // else {
+              //   alert(msg);
+              // }
+              $(".modal-body").html(msg);
+              $("#myModal").modal({ keyboard: true });
             }
           });
         });
